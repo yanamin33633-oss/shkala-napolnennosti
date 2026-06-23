@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Шкала наполненности · по боксу</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F5F0E8;
+    --cream2:#FBF8F2;
+    --ink:#2C2C2A;
+    --muted:#6F6E68;
+    --hint:#9A988F;
+    --teal:#0F6E56;
+    --teal-soft:#E1F5EE;
+    --teal-line:rgba(15,110,86,.18);
+    --coral:#D85A30;
+    --amber:#BA7517;
+    --line:rgba(44,44,42,.10);
+    --radius:22px;
+    --radius-sm:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Manrope',system-ui,sans-serif;
+    background:radial-gradient(120% 90% at 50% 0%, #FBF8F2 0%, #F1EADD 100%);
+    color:var(--ink);
+    min-height:100vh;
+    padding:28px 16px 48px;
+    display:flex;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{width:100%;max-width:440px;}
+  .brand{text-align:center;margin-bottom:18px;}
+  .brand .kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);font-weight:600;}
+  .brand h1{font-size:25px;font-weight:700;margin-top:6px;letter-spacing:-.01em;}
+  .brand p{font-size:14px;color:var(--muted);margin-top:6px;line-height:1.5;}
+  .card{
+    background:var(--cream2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px 20px;
+    box-shadow:0 8px 28px rgba(70,55,30,.06);
+  }
+  .radar-wrap{display:flex;justify-content:center;margin:4px 0 10px;}
+  .sphere{margin-bottom:14px;}
+  .sphere .top{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:500;margin-bottom:5px;}
+  .sphere .top .ico{width:22px;height:22px;color:var(--teal);flex:none;}
+  .sphere .top .val{margin-left:auto;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums;}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;
+    background:linear-gradient(90deg,var(--teal) 0%,var(--teal) 50%,#E6E0D4 50%,#E6E0D4 100%);
+    outline:none;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;
+    background:#fff;border:3px solid var(--teal);box-shadow:0 2px 6px rgba(15,110,86,.35);cursor:pointer;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--teal);
+    box-shadow:0 2px 6px rgba(15,110,86,.35);cursor:pointer;
+  }
+  .q-label{font-size:15px;font-weight:600;margin:20px 0 10px;}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;}
+  .chip{
+    font-family:inherit;font-size:13px;font-weight:500;padding:8px 15px;border-radius:99px;
+    border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;transition:.15s;
+  }
+  .chip:hover{border-color:var(--teal);}
+  .chip.on{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .go{
+    width:100%;font-family:inherit;font-size:16px;font-weight:600;color:#fff;background:var(--teal);
+    border:none;border-radius:99px;padding:15px;margin-top:22px;cursor:pointer;transition:.15s;
+    display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px rgba(15,110,86,.28);
+  }
+  .go:hover{background:#0c5b47;transform:translateY(-1px);}
+  .go:active{transform:translateY(0);}
+  #result{margin-top:18px;}
+  .res-card{background:var(--cream2);border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;box-shadow:0 8px 28px rgba(70,55,30,.06);}
+  .total{display:flex;align-items:baseline;gap:9px;margin-bottom:16px;}
+  .total .lbl{font-size:13px;color:var(--muted);}
+  .total .num{font-size:30px;font-weight:700;color:var(--ink);}
+  .total .of{font-size:14px;color:var(--hint);}
+  .focus{background:var(--teal-soft);border-radius:var(--radius-sm);padding:16px;margin-bottom:14px;}
+  .focus .tag{font-size:12px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:6px;}
+  .focus h3{font-size:18px;font-weight:700;margin:6px 0 6px;color:#0a5240;}
+  .focus p{font-size:14px;line-height:1.55;color:var(--teal);}
+  .also{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:16px;display:flex;gap:8px;}
+  .also .dot{color:var(--amber);flex:none;margin-top:1px;}
+  .block-title{font-size:13px;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;margin:18px 0 10px;display:flex;align-items:center;gap:7px;}
+  .block-title .ico{color:var(--teal);width:18px;height:18px;}
+  .steps{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .steps li{display:flex;gap:11px;font-size:14px;line-height:1.5;color:var(--ink);}
+  .steps .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--teal-soft);color:var(--teal);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .box-tip{display:flex;gap:10px;font-size:13px;line-height:1.5;color:var(--muted);background:#F3EEE4;border-radius:var(--radius-sm);padding:13px;margin-top:16px;}
+  .box-tip .ico{color:var(--amber);flex:none;width:18px;height:18px;}
+  .story-label{text-align:center;font-size:13px;color:var(--muted);margin:22px 0 10px;}
+  .story-canvas-wrap{display:flex;justify-content:center;}
+  canvas{width:230px;border-radius:var(--radius-sm);box-shadow:0 8px 22px rgba(70,55,30,.14);}
+  .save{
+    width:100%;font-family:inherit;font-size:15px;font-weight:600;color:var(--teal);background:#fff;
+    border:1.5px solid var(--teal);border-radius:99px;padding:13px;margin-top:14px;cursor:pointer;transition:.15s;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .save:hover{background:var(--teal-soft);}
+  .invite{text-align:center;font-size:13px;color:var(--muted);margin-top:18px;line-height:1.5;}
+  .invite a{color:var(--teal);font-weight:600;text-decoration:none;}
+  .footer{text-align:center;font-size:12px;color:var(--hint);margin-top:24px;}
+  svg.icon{display:block;}
+  @media (min-width:760px){
+    .app{max-width:800px;}
+    .card{display:grid;grid-template-columns:1.05fr 1fr;gap:20px 40px;align-items:center;
+      grid-template-areas:"radar spheres" "q q" "prio prio" "go go";}
+    .radar-wrap{grid-area:radar;margin:0;}
+    #spheres{grid-area:spheres;align-self:center;}
+    .q-label{grid-area:q;margin-top:6px;}
+    #prio{grid-area:prio;}
+    #go{grid-area:go;max-width:360px;justify-self:center;}
+    #result{max-width:580px;margin-left:auto;margin-right:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">
+    <div class="kicker">пу пу пу бокс</div>
+    <h1>Шкала наполненности</h1>
+    <p>Тихая сверка с собой: как наполнены твои резервуары сегодня?</p>
+  </div>
+
+  <div class="card">
+    <div class="radar-wrap" id="radar"></div>
+    <div id="spheres"></div>
+
+    <div class="q-label">Что для тебя сейчас важнее всего?</div>
+    <div class="chips" id="prio"></div>
+
+    <button class="go" id="go">
+      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+      Собрать итог
+    </button>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="footer">создано для проекта «пу пу пу бокс» · продаём не коробку, а повод побыть вместе</div>
+</div>
+
+<script>
+const ICONS = {
+  moon:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>',
+  coffee:'<path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  spark:'<path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/>',
+  anchor:'<circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/>',
+  bolt:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/>',
+  seed:'<path d="M7 20h10"/><path d="M12 20c0-7 3-11 9-11-1 6-4 9-9 9Z"/><path d="M12 20c0-5-2.5-8-7-8 .8 4.5 3 7 7 7Z"/>',
+  gift:'<rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13M3 12h18"/><path d="M12 8S10 3 7.5 3 5 6 7 8M12 8s2-5 4.5-5S19 6 17 8"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>'
+};
+function svg(p,s){s=s||20;return '<svg class="icon" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+
+const S = [
+  {id:"sleep", short:"Сон", name:"Сон и тело", icon:"moon",
+   note:"Тело сейчас просит заботы — возможно, дело не в силе воли, а в усталости и недосыпе.",
+   steps:["Сегодня ложись на 30 минут раньше обычного.","Убери телефон из спальни хотя бы на эту ночь.","Утром выпей стакан воды до кофе — мягкий старт."],
+   box:"Тёплый вечер дома: свеча и спокойная медитация из бокса, чтобы тело выдохнуло."},
+  {id:"rest", short:"Отдых", name:"Отдых", icon:"coffee",
+   note:"Отдых давно ждёт своей очереди. Пауза — это не лень, а топливо для всего остального.",
+   steps:["Найди в неделе один час только для себя — впиши его как встречу.","В этот час никаких задач и пользы, только то, что восстанавливает.","Скажи себе вслух: отдыхать — можно."],
+   box:"Вечер без спешки: холсты и краски, чтобы переключить голову и просто рисовать."},
+  {id:"contact", short:"Близость", name:"Контакт с близкими", icon:"users",
+   note:"Тебе сейчас не хватает близости. Это нормально — связь нужно подпитывать, она не держится сама.",
+   steps:["Напиши подруге прямо сейчас — без повода, просто «думаю о тебе».","Позови её провести вечер вдвоём на этой неделе.","Задай ей один вопрос, который давно хотела задать."],
+   box:"Бокс для подружек: парные браслеты-желания и колода вопросов для сближения."},
+  {id:"joy", short:"Радость", name:"Радость и удовольствие", icon:"spark",
+   note:"Радости просто так сейчас маловато. Удовольствие — это не каприз, а часть наполненности.",
+   steps:["Сделай сегодня одну вещь без всякой пользы — просто в кайф.","Вспомни, что радовало тебя в детстве, и повтори в мини-формате.","Заметь и проживи один приятный момент целиком, не отвлекаясь."],
+   box:"Творческий вечер: разрисуйте бокалы — себе и подруге, каждый свой."},
+  {id:"self", short:"Опора", name:"Опора на себя", icon:"anchor",
+   note:"Опора на себя сейчас немного шаткая. Стоит мягко вернуться к себе и своим точкам устойчивости.",
+   steps:["Вспомни 3 момента за месяц, когда ты собой гордилась.","Запиши, что ты умеешь и за что тебя ценят близкие.","Сделай сегодня один выбор только для себя, не оглядываясь."],
+   box:"Практика на внутреннего ребёнка: холст «нарисуй своё состояние»."},
+  {id:"energy", short:"Энергия", name:"Энергия на дела", icon:"bolt",
+   note:"Энергии на дела почти не осталось — возможно, ты давно живёшь на резервах.",
+   steps:["Выбери на завтра одну главную задачу, остальное — по желанию.","Разреши себе сделать меньше, чем планировала.","Сделай паузу на 10 минут раньше, чем почувствуешь, что выдохлась."],
+   box:"Послание в бутылочке: стеклянная капсула из бокса — напиши письмо себе и открой его через месяц, когда захочешь."}
+];
+const N=S.length;
+
+function vals(){return S.map(s=>+document.getElementById("in-"+s.id).value);}
+function pt(cx,cy,R,i,f){const a=(-90+i*(360/N))*Math.PI/180;return [cx+Math.cos(a)*R*f, cy+Math.sin(a)*R*f];}
+
+function buildRadar(){
+  const cx=160,cy=134,R=84;
+  let s='<svg width="320" height="270" viewBox="0 0 320 270" aria-label="Лепестковый круг состояния">';
+  [.25,.5,.75,1].forEach(f=>{let p="";for(let i=0;i<N;i++){const[x,y]=pt(cx,cy,R,i,f);p+=(i?" ":"")+x.toFixed(1)+","+y.toFixed(1);}s+='<polygon points="'+p+'" fill="none" stroke="var(--teal-line)" stroke-width="1"/>';});
+  for(let i=0;i<N;i++){const[x,y]=pt(cx,cy,R,i,1);s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="var(--teal-line)" stroke-width="1"/>';const[lx,ly]=pt(cx,cy,R+16,i,1);const anc=Math.abs(lx-cx)<5?"middle":(lx>cx?"start":"end");s+='<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" text-anchor="'+anc+'" font-family="Manrope,sans-serif" font-size="12" font-weight="600" fill="var(--muted)">'+S[i].short+'</text>';}
+  s+='<polygon id="shape" points="" fill="rgba(29,158,117,.22)" stroke="var(--teal)" stroke-width="2.5" stroke-linejoin="round"/><g id="dots"></g></svg>';
+  document.getElementById("radar").innerHTML=s;
+}
+function updateRadar(){
+  const cx=160,cy=134,R=84,v=vals();let p="",d="";
+  for(let i=0;i<N;i++){const[x,y]=pt(cx,cy,R,i,v[i]/100);p+=(i?" ":"")+x.toFixed(1)+","+y.toFixed(1);d+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.5" fill="var(--teal)"/>';}
+  document.getElementById("shape").setAttribute("points",p);
+  document.getElementById("dots").innerHTML=d;
+}
+function paintTrack(el){const v=el.value;el.style.background='linear-gradient(90deg,var(--teal) 0%,var(--teal) '+v+'%,#E6E0D4 '+v+'%,#E6E0D4 100%)';}
+
+const wrap=document.getElementById("spheres");
+S.forEach(s=>{
+  const row=document.createElement("div");row.className="sphere";
+  row.innerHTML='<div class="top"><span class="ico">'+svg(ICONS[s.icon],22)+'</span><span>'+s.name+'</span><span class="val" id="v-'+s.id+'">50</span></div>'+
+    '<input type="range" min="0" max="100" step="1" value="50" id="in-'+s.id+'">';
+  wrap.appendChild(row);
+});
+S.forEach(s=>{const el=document.getElementById("in-"+s.id);paintTrack(el);el.addEventListener("input",()=>{document.getElementById("v-"+s.id).textContent=el.value;paintTrack(el);updateRadar();});});
+
+let prio=-1;
+const pw=document.getElementById("prio");
+S.forEach((s,i)=>{const b=document.createElement("button");b.className="chip";b.textContent=s.short;b.onclick=()=>{prio=(prio===i?-1:i);Array.from(pw.children).forEach((c,j)=>c.classList.toggle("on",j===prio));};pw.appendChild(b);});
+
+function rr(c,x0,y0,w,h,r){c.beginPath();c.moveTo(x0+r,y0);c.arcTo(x0+w,y0,x0+w,y0+h,r);c.arcTo(x0+w,y0+h,x0,y0+h,r);c.arcTo(x0,y0+h,x0,y0,r);c.arcTo(x0,y0,x0+w,y0,r);c.closePath();}
+function drawStory(v,focusName){
+  const c=document.getElementById("story-canvas");const W=720,H=1320;c.width=W;c.height=H;const x=c.getContext("2d");
+  const cx=W/2;
+  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,"#F1E7D6");g.addColorStop(1,"#E3D4BB");x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle="rgba(29,158,117,.10)";x.beginPath();x.arc(W-40,130,150,0,7);x.fill();
+  x.fillStyle="rgba(186,117,23,.09)";x.beginPath();x.arc(70,H-90,170,0,7);x.fill();
+  x.save();x.shadowColor="rgba(80,60,30,.18)";x.shadowBlur=44;x.shadowOffsetY=14;x.fillStyle="#FBF8F2";rr(x,40,56,640,1208,40);x.fill();x.restore();
+  x.strokeStyle="rgba(15,110,86,.16)";x.lineWidth=2;rr(x,40,56,640,1208,40);x.stroke();
+
+  x.textAlign="center";
+  x.save();x.letterSpacing="7px";x.fillStyle="#0F6E56";x.font="700 30px Manrope, sans-serif";x.fillText("ПУ ПУ ПУ БОКС",cx+3,150);x.restore();
+  x.fillStyle="rgba(15,110,86,.5)";x.beginPath();x.arc(cx,178,4,0,7);x.fill();
+  x.fillStyle="#2C2C2A";x.font="700 48px Manrope, sans-serif";x.fillText("моя наполненность",cx,236);
+  const d=new Date().toLocaleDateString("ru-RU",{day:"numeric",month:"long"});
+  x.fillStyle="#9A988F";x.font="400 26px Manrope, sans-serif";x.fillText(d,cx,282);
+
+  const ry=620,R=184;
+  for(const ring of [.25,.5,.75,1]){x.beginPath();for(let i=0;i<N;i++){const a=(-90+i*60)*Math.PI/180,px=cx+Math.cos(a)*R*ring,py=ry+Math.sin(a)*R*ring;i?x.lineTo(px,py):x.moveTo(px,py);}x.closePath();x.strokeStyle="rgba(15,110,86,.13)";x.lineWidth=1.5;x.stroke();}
+  for(let i=0;i<N;i++){const a=(-90+i*60)*Math.PI/180;x.beginPath();x.moveTo(cx,ry);x.lineTo(cx+Math.cos(a)*R,ry+Math.sin(a)*R);x.strokeStyle="rgba(15,110,86,.13)";x.lineWidth=1.5;x.stroke();}
+  x.beginPath();for(let i=0;i<N;i++){const a=(-90+i*60)*Math.PI/180,f=v[i]/100,px=cx+Math.cos(a)*R*f,py=ry+Math.sin(a)*R*f;i?x.lineTo(px,py):x.moveTo(px,py);}x.closePath();
+  const rg=x.createRadialGradient(cx,ry,12,cx,ry,R);rg.addColorStop(0,"rgba(29,158,117,.34)");rg.addColorStop(1,"rgba(29,158,117,.14)");x.fillStyle=rg;x.fill();
+  x.strokeStyle="#0F6E56";x.lineWidth=4;x.lineJoin="round";x.stroke();
+  for(let i=0;i<N;i++){const a=(-90+i*60)*Math.PI/180,f=v[i]/100,px=cx+Math.cos(a)*R*f,py=ry+Math.sin(a)*R*f;x.beginPath();x.arc(px,py,9,0,7);x.fillStyle="#FBF8F2";x.fill();x.beginPath();x.arc(px,py,9,0,7);x.strokeStyle="#0F6E56";x.lineWidth=3;x.stroke();x.beginPath();x.arc(px,py,3.5,0,7);x.fillStyle="#0F6E56";x.fill();}
+  x.font="600 23px Manrope, sans-serif";x.fillStyle="#6F6E68";
+  for(let i=0;i<N;i++){const a=(-90+i*60)*Math.PI/180,lx=cx+Math.cos(a)*(R+38),ly=ry+Math.sin(a)*(R+38);x.textAlign=Math.abs(lx-cx)<6?"center":(lx>cx?"left":"right");x.fillText(S[i].short,lx,ly+8);}
+
+  const avg=Math.round(v.reduce((a,b)=>a+b,0)/N);
+  x.textAlign="center";x.fillStyle="#2C2C2A";x.font="700 104px Manrope, sans-serif";x.fillText(avg,cx,1010);
+  x.fillStyle="#9A988F";x.font="400 26px Manrope, sans-serif";x.fillText("из 100 · наполненность",cx,1052);
+
+  if(focusName){const t="фокус · "+focusName.toLowerCase();x.font="600 26px Manrope, sans-serif";const tw=x.measureText(t).width;const pw=tw+56;x.fillStyle="#E1F5EE";rr(x,cx-pw/2,1090,pw,58,29);x.fill();x.fillStyle="#0a5240";x.textAlign="center";x.fillText(t,cx,1128);}
+
+  const cap=avg>=70?"ты сейчас в ресурсе — береги это":avg>=45?"есть из чего черпать, и есть куда долить":"будь к себе сегодня помягче";
+  x.fillStyle="#6F6E68";x.font="400 25px Manrope, sans-serif";x.fillText(cap,cx,1196);
+  x.fillStyle="#0F6E56";x.font="600 27px Manrope, sans-serif";x.fillText("pupupubox.ru",cx,1240);
+}
+
+document.getElementById("go").addEventListener("click",()=>{
+  const v=vals();let low=0;v.forEach((x,i)=>{if(x<v[low])low=i;});
+  const mi=prio>=0?prio:low;const m=S[mi];const avg=Math.round(v.reduce((a,b)=>a+b,0)/N);
+  let also="";if(prio>=0&&low!==prio)also='<div class="also"><span class="dot">'+svg(ICONS.eye,16)+'</span><span>А ещё ниже всего сейчас — <b>'+S[low].name.toLowerCase()+'</b>. Загляни и туда, когда будут силы.</span></div>';
+  let stepsHtml="";m.steps.forEach((st,i)=>{stepsHtml+='<li><span class="n">'+(i+1)+'</span><span>'+st+'</span></li>';});
+  document.getElementById("result").innerHTML=
+    '<div class="res-card">'+
+      '<div class="total"><span class="lbl">общая наполненность</span><span class="num">'+avg+'</span><span class="of">/ 100</span></div>'+
+      '<div class="focus"><div class="tag">'+svg(ICONS[m.icon],16)+(prio>=0?"твой фокус сейчас":"больше всего просит внимания")+'</div><h3>'+m.name+'</h3><p>'+m.note+'</p></div>'+
+      also+
+      '<div class="block-title"><span class="ico">'+svg(ICONS.seed,18)+'</span>маленькие шаги на сегодня</div>'+
+      '<ul class="steps">'+stepsHtml+'</ul>'+
+      '<div class="box-tip"><span class="ico">'+svg(ICONS.gift,18)+'</span><span>'+m.box+'</span></div>'+
+      '<div class="story-label">карточка для сторис — можно сохранить и поделиться</div>'+
+      '<div class="story-canvas-wrap"><canvas id="story-canvas"></canvas></div>'+
+      '<button class="save" id="save">'+svg(ICONS.download,18)+'сохранить карточку</button>'+
+      '<div class="invite">Нам уютно вместе — заходи в наш <a href="http://pupupubox.ru/" target="_blank">Telegram-канал</a>, там тепло и по-человечески.</div>'+
+    '</div>';
+  drawStory(v,m.name);
+  document.getElementById("save").addEventListener("click",()=>{const a=document.createElement("a");a.download="moya-napolnennost.png";a.href=document.getElementById("story-canvas").toDataURL("image/png");a.click();});
+  document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+buildRadar();updateRadar();
+</script>
+</body>
+</html>
