@@ -279,7 +279,7 @@ document.getElementById("go").addEventListener("click",()=>{
       '<div class="story-label">карточка для сторис — можно сохранить и поделиться</div>'+
       '<div class="story-canvas-wrap"><canvas id="story-canvas"></canvas></div>'+
       '<button class="save" id="save">'+svg(ICONS.download,18)+'сохранить карточку</button>'+
-      '<div class="invite">Нам уютно вместе — заходи в наш <a href="http://pupupubox.ru/" target="_blank">Telegram-канал</a>, там тепло и по-человечески.</div>'+
+      '<div class="invite">Нам уютно вместе — заходи в наш <a href="https://t.me/pupupubox" target="_blank">Telegram-канал</a>, там тепло и по-человечески.</div>'+
     '</div>';
   drawStory(v,m.name);
   document.getElementById("save").addEventListener("click",()=>{const a=document.createElement("a");a.download="moya-napolnennost.png";a.href=document.getElementById("story-canvas").toDataURL("image/png");a.click();});
